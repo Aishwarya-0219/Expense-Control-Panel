@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🔥 Smart Expense Tracker Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { 
+            font-family:'Orbitron',monospace; 
+            background: 
+                radial-gradient(circle at 20% 80%, #0F0F23 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, #1A0033 0%, transparent 50%),
+                linear-gradient(135deg, #0F0F23 0%, #1A1A3E 50%, #2D2D44 100%);
+            min-height:100vh; padding:20px; color:#FFF; overflow-x:hidden;
+            animation: bgShift 10s infinite alternate;
+        }
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        .dashboard { 
+            max-width:1400px; margin:0 auto; display:grid; 
+            grid-template-columns:1fr 1fr; gap:40px; 
+        }
+        .card { 
+            background: rgba(45,45,68,0.85); 
+            backdrop-filter:blur(25px); border-radius:25px; 
+            padding:40px; border:2px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            position:relative; overflow:hidden;
+        }
+        .card::before {
+            content:''; position:absolute; top:-50%; left:-50%; 
+            width:200%; height:200%; background: 
+                radial-gradient(circle, rgba(102,126,234,0.1) 0%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer { 0%{ transform:translateX(-100%) translateY(-100%) rotate(45deg); } 100%{ transform:translateX(100%) translateY(100%) rotate(45deg); } }
+        
+        .title { 
+            font-size:3em; font-weight:900; 
+            background:linear-gradient(45deg, #00D4FF, #FF0080, #39FF14, #FFAA00);
+            background-size:300% 300%;
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            background-clip:text; text-align:center; margin-bottom:30px;
+            animation: gradientShift 4s ease infinite;
+            text-shadow: 0 0 30px rgba(0,212,255,0.5);
+        }
+        @keyframes gradientShift { 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
+        
+        .input-group { display:flex; gap:15px; margin:20px 0; }
+        input { 
+            flex:1; padding:18px; border-radius:15px; border:2px solid rgba(255,255,255,0.1);
+            background:rgba(255,255,255,0.08); color:#FFF; font-size:1.1em;
+            transition:all 0.3s; backdrop-filter:blur(15px);
+        }
+        input:focus { outline:none; border-color:#00D4FF; box-shadow:0 0 20px rgba(0,212,255,0.5); }
+        button { 
+            padding:18px 30px; border-radius:15px; font-size:1.1em; font-weight:900;
+            background:linear-gradient(45deg, #667EEA, #764BA2, #F093FB);
+            cursor:pointer; border:none; color:#FFF; transition:all 0.3s;
+            box-shadow:0 10px 30px rgba(102,126,234,0.4);
+        }
+        button:hover { 
+            transform:translateY(-5px) scale(1.05); 
+            box-shadow:0 20px 40px rgba(102,126,234,0.6);
+            animation: pulse 0.6s infinite;
+        }
+        @keyframes pulse { 0%,100%{ box-shadow:0 20px 40px rgba(102,126,234,0.6); } 50%{ box-shadow:0 20px 50px rgba(102,126,234,0.8); } }
+        
+        table { width:100%; border-collapse:collapse; font-size:1.3em; margin-top:20px; }
+        th, td { padding:20px 15px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.1); }
+        th { 
+            background:linear-gradient(90deg, rgba(102,126,234,0.8), rgba(118,75,162,0.8)); 
+            border-radius:12px; text-transform:uppercase; letter-spacing:1px;
+        }
+        tr { transition:all 0.3s; cursor:pointer; }
+        tr:hover { 
+            background:linear-gradient(90deg, rgba(0,212,255,0.2), rgba(255,0,128,0.2));
+            transform:translateX(10px); box-shadow:0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .pie-container { 
+            position:relative; width:400px; height:400px; margin:30px auto;
+            border-radius:50%; 
+            background: conic-gradient(
+                #FF0080 0deg 43%, #00D4FF 43% 69%, #FFAA00 69% 85%, 
+                #39FF14 85% 95%, #FF6B6B 95% 100%);
+            box-shadow: 
+                0 0 50px #FF008080, 0 0 100px #00D4FF40,
+                inset 0 0 50px rgba(255,255,255,0.1);
+            animation: rotateGlow 8s linear infinite, neonPulse 2s ease-in-out infinite alternate;
+        }
+        @keyframes rotateGlow { 0%{ transform:rotate(0deg); } 100%{ transform:rotate(360deg); } }
+        @keyframes neonPulse { 
+            0% { box-shadow:0 0 50px #FF008080, 0 0 100px #00D4FF40; }
+            100% { box-shadow:0 0 80px #FF0080CC, 0 0 150px #00D4FFCC, 0 0 200px #39FF14AA; }
+        }
+        .pie-center { 
+            position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+            width:150px; height:150px; background:rgba(15,15,35,0.9); 
+            border-radius:50%; border:3px solid #00D4FF;
+            font-size:1.8em; font-weight:900; text-align:center; padding-top:25px;
+            box-shadow: inset 0 0 30px rgba(0,212,255,0.3);
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce { 0%,100%{ transform:translate(-50%,-50%) scale(1); } 50%{ transform:translate(-50%,-50%) scale(1.05); } }
+        
+        .stats { display:flex; justify-content:space-around; margin:20px 0; font-size:1.5em; }
+        .stat { text-align:center; }
+        .stat-value { font-size:2.5em; font-weight:900; color:#00D4FF; }
+        @media (max-width:768px) { .dashboard { grid-template-columns:1fr; gap:20px; } }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- LEFT: Inputs + Table -->
+        <div class="card">
+            <h1 class="title">⚡ Expense Control Panel</h1>
+            
+            <div class="input-group">
+                <input id="category" placeholder="🍔 Category (Food, Travel...)" />
+                <input id="amount" type="number" placeholder="💵 Amount ₹5000" />
+            </div>
+            <button onclick="addExpense()">✨ ADD EXPENSE</button>
+            <input id="search" placeholder="🔍 Search/Filter" oninput="filterTable()" style="margin-top:10px;" />
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="totalCount">5</div>
+                    <div>Items</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalAmount">₹19,410</div>
+                    <div>Total</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="avgAmount">₹3,882</div>
+                    <div>Avg</div>
+                </div>
+            </div>
+            
+            <table id="expenseTable">
+                <thead><tr><th>Category</th><th>Amount</th><th>%</th></tr></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        
+        <!-- RIGHT: Animated Pie -->
+        <div class="card">
+            <h2 style="text-align:center; margin-bottom:20px; color:#FFF; font-size:1.8em;">
+                🌌 Real-time Distribution
+            </h2>
+            <div class="pie-container" id="pieChart">
+                <div class="pie-center">
+                    ₹<span id="pieTotal">19,410</span><br>
+                    <small>Total</small>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:20px; font-size:1.2em;">
+                ✨ Live Neon Analytics ✨
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let expenses = [
+            {category: 'Food', amount: 8310},
+            {category: 'Travel', amount: 5000},
+            {category: 'Bills', amount: 3100},
+            {category: 'Fun', amount: 2000},
+            {category: 'Shopping', amount: 1000}
+        ];
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            let total = 0;
+            expenses.forEach(exp => total += exp.amount);
+            
+            expenses.forEach((exp, i) => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = exp.category;
+                row.insertCell(1).textContent = '₹' + exp.amount.toLocaleString();
+                const pct = ((exp.amount / total) * 100).toFixed(1) + '%';
+                row.insertCell(2).textContent = pct;
+            });
+            
+            document.getElementById('totalAmount').textContent = '₹' + total.toLocaleString();
+            document.getElementById('totalCount').textContent = expenses.length;
+            document.getElementById('avgAmount').textContent = '₹' + (total/expenses.length).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+            document.getElementById('pieTotal').textContent = total.toLocaleString();
+            updatePie();
+        }
+
+        function addExpense() {
+            const cat = document.getElementById('category').value.trim();
+            const amt = parseFloat(document.getElementById('amount').value);
+            if (cat && !isNaN(amt) && amt > 0) {
+                expenses.push({category: cat, amount: amt});
+                document.getElementById('category').value = '';
+                document.getElementById('amount').value = '';
+                renderTable();
+            } else {
+                alert('Please enter valid category & amount! ✨');
+            }
+        }
+
+        function filterTable() {
+            const keyword = document.getElementById('search').value.toLowerCase();
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach(row => {
+                const cat = row.cells[0].textContent.toLowerCase();
+                row.style.display = cat.includes(keyword) ? '' : 'none';
+            });
+        }
+
+        function updatePie() {
+            const pie = document.getElementById('pieChart');
+            let total = expenses.reduce((sum, e) => sum + e.amount, 0);
+            let startAngle = 0;
+            let gradientParts = [];
+            
+            expenses.forEach(exp => {
+                const pct = (exp.amount / total) * 360;
+                const hue = (startAngle / 360 * 240 + 120) % 360;
+                gradientParts.push(`hsl(${hue}, 80%, 55%) ${startAngle}deg ${startAngle + pct}deg`);
+                startAngle += pct;
+            });
+            
+            pie.style.background = 'conic-gradient(' + gradientParts.join(', ') + ')';
+        }
+
+        // Enter key support
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addExpense();
+        });
+
+        renderTable();
+    </script>
+</body>
+</html>
